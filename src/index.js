@@ -44,7 +44,28 @@ AFRAME.registerComponent('urdf', {
 
     urdfLoader.load(urdfUrl, function (object) {
       self.model = object;
-      el.setObject3D('mesh', object);
+      // print out the type of object
+      console.log('URDF Object Type: ' + object.type);
+      // number of links in the URDF
+      console.log('Number of Links: ' + Object.keys(object.links).length);
+      console.log('Number of Joints: ' + Object.keys(object.joints).length);
+      console.log('Number of Colliders: ' + Object.keys(object.colliders).length);
+      console.log('Number of Visuals: ' + Object.keys(object.visual).length);
+      // iteratively add each link
+      Object.keys(object.links).forEach(key => {
+        console.log('Adding Object3D for link: ' + key);
+        const linkObject3D = object.links[key];
+        console.log('Link Object3D: ' + linkObject3D.isObject3D);
+        const newObject3D = new THREE.Object3D();
+        console.log('New Object3D: ' + newObject3D.isObject3D);
+        console.log('New Object3D: ' + newObject3D.type);
+        console.log('Link Object3D: ' + newObject3D.copy(linkObject3D).isObject3D);
+        console.log('Link Object3D: ' + newObject3D.copy(linkObject3D).type);
+        // linkObject3D.type = 'THREE.Object3D';
+        // console.log('Link Object3D: ' + linkObject3D.type);
+        // TODO: Typecast to THREE.Object3D
+        el.setObject3D('mesh', newObject3D.copy(linkObject3D));
+      });
       el.emit('model-loaded', { format: 'urdf', model: object });
     });
   }

@@ -5,7 +5,8 @@
   "main": "dist/aframe-urdf.min.js",
   "files": [
     "dist/*",
-    "src/*"
+    "src/*",
+    "urdf/*"
   ],
   "scripts": {
     "dev": "cross-env INSPECTOR_VERSION=dev webpack serve --port 8080",

@@ -1,31 +1,37 @@
 {
-    "name": "aframe-urdf",
-    "version": "1.0.0",
-    "description": "URDF loader for A-Frame",
-    "files": [
-      "dist"
-    ],
-    "directories": {
-      "lib": "lib"
-    },
-    "scripts": {
-      "build": "webpack"
-    },
-    "author": "hu-po",
-    "keywords": [
-      "a-frame",
-      "aframe",
-      "aframe-vr",
-      "aframe-component",
-      "robotics",
-      "urdf",
-      "urdf-models"
-    ],
-    "repository": "github.com/hu-po/aframe-urdf",
-    "license": "MIT",
-    "devDependencies": {},
-    "peerDependencies": {
-      "aframe": "^0.8.0"
-    },
-    "dependencies": {}
+  "name": "aframe-urdf",
+  "version": "1.0.0",
+  "description": "A URDF loader for A-Frame",
+  "main": "dist/aframe-urdf.js",
+  "files": [
+    "dist"
+  ],
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "build": "webpack --progress",
+    "lint": "prettier --write 'src/**/*.js'"
+  },
+  "author": "hu-po",
+  "keywords": [
+    "a-frame",
+    "aframe",
+    "three.js",
+    "vr",
+    "aframe-component",
+    "robotics",
+    "urdf",
+    "urdf-models"
+  ],
+  "repository": "github.com/hu-po/aframe-urdf",
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4",
+    "prettier": "^2.7.1"
+  },
+  "peerDependencies": {
+    "aframe": "^1.5.0"
   }
+}

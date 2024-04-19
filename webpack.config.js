@@ -2,12 +2,14 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-    mode: 'development',
     entry: "./src/index.js",
     output: {
         path: path.resolve(__dirname, 'dist'),
+        publicPath: '/dist/',
         filename: "aframe-urdf.min.js"
     },
+    devtool: 'source-map',
+    mode: 'development',
     devServer: {
         port: process.env.PORT || 9000,
         hot: false,

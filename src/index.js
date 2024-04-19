@@ -10,30 +10,21 @@ import URDFLoader from 'urdf-loader';
 
 AFRAME.registerComponent('urdf', {
   schema: {
-    url: { type: 'string', default: 'path/to/robot.urdf' },
-    obj: { type: 'model' }
+    url: { type: 'asset' }
   },
 
   init: function () {
+    console.log('URDF Component Initialized');
     this.model = null;
     this.urdfLoader = new URDFLoader();
-    this.urdfLoader.manager.onLoad = function () {
-      console.log('All resources loaded.');
-    };
-    this.urdfLoader.manager.onProgress = function (url, itemsLoaded, itemsTotal) {
-      console.log('Loading file: ' + url + '\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
-    };
-    this.urdfLoader.manager.onError = function (url) {
-      console.log('There was an error loading ' + url);
-    };
   },
 
   update: function (oldData) {
     var data = this.data;
-    if (!data.obj) { return; }
+    if (!data.url) { return; }
     this.resetMesh();
     this.loadURDF(data.url);
-    // this.robot.setJointValue( jointName, jointAngle );
+    // this.model.setJointValue( jointName, jointAngle );
   },
 
   remove: function () {
@@ -46,6 +37,7 @@ AFRAME.registerComponent('urdf', {
   },
 
   loadURDF: function (urdfUrl) {
+    console.log('Loading URDF from: ' + urdfUrl);
     var self = this;
     var el = this.el;
     var urdfLoader = this.urdfLoader;
@@ -53,7 +45,7 @@ AFRAME.registerComponent('urdf', {
     urdfLoader.load(urdfUrl, function (object) {
       self.model = object;
       el.setObject3D('mesh', object);
-      el.emit('model-loaded', { format: 'obj', model: object });
+      el.emit('model-loaded', { format: 'urdf', model: object });
     });
   }
 });

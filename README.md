@@ -23,7 +23,7 @@ Drop in the URDF component and plug into your HTML:
 <body>
   <a-scene>
     ...
-    <a-urdf material="shader: gradient; topColor: 255 0 0; bottomColor: 0 121 255;"></a-urdf>
+    <a-urdf url="path/to/robot.urdf"></a-urdf>
   </a-scene>
 </body>
 ```
@@ -43,4 +43,13 @@ npm install aframe-urdf
 ```
 npm install
 npm run build
+```
+
+[Publish to npm](https://aframe.io/docs/1.5.0/introduction/writing-a-component.html#publishing-a-component)
+https://www.npmjs.com/package/angle
+
+```
+npm install -g angle
+npm run dev
+npm publish
 ```

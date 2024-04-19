@@ -1,6 +1,9 @@
 # Compiled class file
 *.class
 
+# Ignore URDF files
+urdf/
+
 # Node Modules
 node_modules/
 

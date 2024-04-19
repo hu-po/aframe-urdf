@@ -10,34 +10,29 @@ import URDFLoader from 'urdf-loader';
 
 AFRAME.registerComponent('urdf', {
   schema: {
-    url: { type: 'string', default: 'path/to/robot.urdf' }
+    url: { type: 'string', default: 'path/to/robot.urdf' },
+    obj: { type: 'model' }
   },
 
   init: function () {
-    var self = this;
+    this.model = null;
     this.urdfLoader = new URDFLoader();
-
     this.urdfLoader.manager.onLoad = function () {
       console.log('All resources loaded.');
     };
-
-    // Set up the loading manager for progress events, etc.
     this.urdfLoader.manager.onProgress = function (url, itemsLoaded, itemsTotal) {
       console.log('Loading file: ' + url + '\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
     };
-
     this.urdfLoader.manager.onError = function (url) {
       console.log('There was an error loading ' + url);
     };
-
   },
 
   update: function (oldData) {
     var data = this.data;
     if (!data.obj) { return; }
-    if (!data.urdf) { return; }
     this.resetMesh();
-    this.loadURDF(data.urdf);
+    this.loadURDF(data.url);
     // this.robot.setJointValue( jointName, jointAngle );
   },
 
@@ -46,29 +41,19 @@ AFRAME.registerComponent('urdf', {
   },
 
   resetMesh: function () {
-    if (this.model) {
-      this.el.removeObject3D('mesh');
-      this.model = null;
-    }
+    if (!this.model) { return; }
+    this.el.removeObject3D('mesh');
   },
 
   loadURDF: function (urdfUrl) {
     var self = this;
     var el = this.el;
+    var urdfLoader = this.urdfLoader;
 
-    this.urdfLoader.load(urdfUrl, function (object) {
+    urdfLoader.load(urdfUrl, function (object) {
       self.model = object;
-      self.model.traverse(function (child) {
-        if (child.isMesh) {
-          var material = new THREE.MeshStandardMaterial();
-          material.metalness = 0;
-          material.flatShading = true;
-          child.material = material;
-        }
-      });
-
       el.setObject3D('mesh', object);
-      el.emit('model-loaded', { format: 'urdf', model: object });
+      el.emit('model-loaded', { format: 'obj', model: object });
     });
   }
 });

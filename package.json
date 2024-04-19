@@ -4,11 +4,9 @@
   "description": "A URDF loader for A-Frame",
   "main": "dist/aframe-urdf.min.js",
   "files": [
-    "dist/*"
+    "dist/*",
+    "src/*"
   ],
-  "directories": {
-    "src": "src"
-  },
   "scripts": {
     "dev": "cross-env INSPECTOR_VERSION=dev webpack serve --port 8080",
     "build": "webpack --progress",

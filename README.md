@@ -30,7 +30,7 @@ Drop in the URDF component and plug into your HTML:
 
 ## Setup
 
-Install using `npm`
+install using `npm`
 
 [![npm version](https://img.shields.io/npm/v/aframe-urdf.svg?style=flat-square)](https://www.npmjs.com/package/aframe-urdf)
 
@@ -40,10 +40,15 @@ npm install aframe-urdf
 
 ## Local Development
 
+basic loop is
+
 ```
 npm install
 npm run build
+npm run dev
 ```
+
+click the link to open a browser with the example page, use ctrl-alt-i to open the inspector
 
 [Publish to npm](https://aframe.io/docs/1.5.0/introduction/writing-a-component.html#publishing-a-component)
 https://www.npmjs.com/package/angle

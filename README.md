@@ -41,5 +41,6 @@ npm install aframe-urdf
 ## Local Development
 
 ```
+npm install
 npm run build
 ```

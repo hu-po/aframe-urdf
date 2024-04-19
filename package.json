@@ -1,17 +1,19 @@
 {
   "name": "aframe-urdf",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A URDF loader for A-Frame",
-  "main": "dist/aframe-urdf.js",
+  "main": "dist/aframe-urdf.min.js",
   "files": [
-    "dist"
+    "dist/*"
   ],
   "directories": {
     "src": "src"
   },
   "scripts": {
+    "dev": "cross-env INSPECTOR_VERSION=dev webpack serve --port 8080",
     "build": "webpack --progress",
-    "lint": "prettier --write 'src/**/*.js'"
+    "lint": "prettier --write 'src/**/*.js'",
+    "start": "npm run dev -- --server-type https"
   },
   "author": "hu-po",
   "keywords": [
@@ -27,9 +29,11 @@
   "repository": "github.com/hu-po/aframe-urdf",
   "license": "MIT",
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "prettier": "^2.7.1",
     "webpack": "^5.91.0",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.11.0"
   },
   "peerDependencies": {
     "aframe": "^1.5.0"

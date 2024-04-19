@@ -13,7 +13,10 @@ Drop in the URDF component and plug into your HTML:
 <head>
   <title>My A-Frame Scene</title>
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <!-- Option (A) from NPM package -->
     <script src="https://unpkg.com/aframe-urdf@1.0.0/dist/urdf.min.js"></script>
+    <!-- Option (B) from GitHub -->
+    <script src="https://raw.githubusercontent.com/hu-popo/aframe-urdf/main/dist/urdf.min.js"></script>
     ...
 </head>
 
@@ -25,5 +28,18 @@ Drop in the URDF component and plug into your HTML:
 </body>
 ```
 
-## References
+## Setup
 
+Install using `npm`
+
+[![npm version](https://img.shields.io/npm/v/aframe-urdf.svg?style=flat-square)](https://www.npmjs.com/package/aframe-urdf)
+
+```sh
+npm install aframe-urdf
+```
+
+## Local Development
+
+```
+npm run build
+```

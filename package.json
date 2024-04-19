@@ -9,7 +9,7 @@
       "lib": "lib"
     },
     "scripts": {
-      "dist": "browserify index.js -o dist/aframe-spe-particles-component.js && browserify index.js | uglifyjs -c -m -o dist/aframe-spe-particles-component.min.js"
+      "build": "webpack"
     },
     "author": "hu-po",
     "keywords": [

@@ -38,6 +38,7 @@
     "aframe": "^1.5.0"
   },
   "dependencies": {
+    "three-stl-loader": "^1.0.6",
     "urdf-loader": "^0.12.1"
   }
 }

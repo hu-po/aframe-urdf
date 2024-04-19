@@ -4,9 +4,11 @@
 // https://www.npmjs.com/package/urdf-loader
 // Inspired by A-Frame OBJ Loader Component:
 // https://github.com/aframevr/aframe/blob/0b7aa6a0575c03963636b02ab24a9fc2658a747c/src/components/obj-model.js
+// Object3D definition
+// https://threejs.org/docs/#api/en/core/Object3D
 
 import URDFLoader from 'urdf-loader';
-
+import { STLLoader } from './STLLoader';
 
 AFRAME.registerComponent('urdf', {
   schema: {
@@ -17,6 +19,20 @@ AFRAME.registerComponent('urdf', {
     console.log('URDF Component Initialized');
     this.model = null;
     this.urdfLoader = new URDFLoader();
+    this.urdfLoader.parseVisual = true;
+    this.urdfLoader.parseCollision = true;
+    this.urdfLoader.loadMeshCb = function (path, manager, done) {
+      console.log('Loading mesh from: ' + path);
+      console.log('Manager: ' + manager.type);
+      const loader = new STLLoader();
+      loader.load(path, geom => {
+        const mesh = new THREE.Mesh(geom, new THREE.MeshStandardMaterial());
+        el.setObject3D('mesh', model);
+        el.emit('model-loaded', { format: 'stl', model: model });
+        done(mesh);
+      });
+    }
+
   },
 
   update: function (oldData) {
@@ -44,27 +60,27 @@ AFRAME.registerComponent('urdf', {
 
     urdfLoader.load(urdfUrl, function (object) {
       self.model = object;
-      // print out the type of object
-      console.log('URDF Object Type: ' + object.type);
+      // el.sceneEl.add(newObject3D);
       // number of links in the URDF
       console.log('Number of Links: ' + Object.keys(object.links).length);
       console.log('Number of Joints: ' + Object.keys(object.joints).length);
-      console.log('Number of Colliders: ' + Object.keys(object.colliders).length);
-      console.log('Number of Visuals: ' + Object.keys(object.visual).length);
       // iteratively add each link
       Object.keys(object.links).forEach(key => {
         console.log('Adding Object3D for link: ' + key);
-        const linkObject3D = object.links[key];
-        console.log('Link Object3D: ' + linkObject3D.isObject3D);
-        const newObject3D = new THREE.Object3D();
-        console.log('New Object3D: ' + newObject3D.isObject3D);
-        console.log('New Object3D: ' + newObject3D.type);
-        console.log('Link Object3D: ' + newObject3D.copy(linkObject3D).isObject3D);
-        console.log('Link Object3D: ' + newObject3D.copy(linkObject3D).type);
-        // linkObject3D.type = 'THREE.Object3D';
-        // console.log('Link Object3D: ' + linkObject3D.type);
-        // TODO: Typecast to THREE.Object3D
-        el.setObject3D('mesh', newObject3D.copy(linkObject3D));
+        // const originalObject3D = object.links[key];
+        // console.log('Object position: ' + originalObject3D.position.x + ', ' + originalObject3D.position.y + ', ' + originalObject3D.position.z);
+        // console.log('Object rotation: ' + originalObject3D.rotation.x + ', ' + originalObject3D.rotation.y + ', ' + originalObject3D.rotation.z);
+        // console.log('Object scale: ' + originalObject3D.scale.x + ', ' + originalObject3D.scale.y + ', ' + originalObject3D.scale.z);
+        // console.log('Object visible: ' + originalObject3D.visible);
+        // console.log('Object children: ' + originalObject3D.children.length);
+
+        const newObject3D = new THREE.Object3D().copy(object.links[key]);
+        // console.log('Object position: ' + newObject3D.position.x + ', ' + newObject3D.position.y + ', ' + newObject3D.position.z);
+        // console.log('Object rotation: ' + newObject3D.rotation.x + ', ' + newObject3D.rotation.y + ', ' + newObject3D.rotation.z);
+        // console.log('Object scale: ' + newObject3D.scale.x + ', ' + newObject3D.scale.y + ', ' + newObject3D.scale.z);
+        // console.log('Object visible: ' + newObject3D.visible);
+        // console.log('Object children: ' + newObject3D.children.length);
+        el.setObject3D(key, newObject3D);
       });
       el.emit('model-loaded', { format: 'urdf', model: object });
     });

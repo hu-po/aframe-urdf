@@ -1,0 +1,31 @@
+{
+    "name": "aframe-urdf",
+    "version": "1.0.0",
+    "description": "URDF loader for A-Frame",
+    "files": [
+      "dist"
+    ],
+    "directories": {
+      "lib": "lib"
+    },
+    "scripts": {
+      "dist": "browserify index.js -o dist/aframe-spe-particles-component.js && browserify index.js | uglifyjs -c -m -o dist/aframe-spe-particles-component.min.js"
+    },
+    "author": "hu-po",
+    "keywords": [
+      "a-frame",
+      "aframe",
+      "aframe-vr",
+      "aframe-component",
+      "robotics",
+      "urdf",
+      "urdf-models"
+    ],
+    "repository": "github.com/hu-po/aframe-urdf",
+    "license": "MIT",
+    "devDependencies": {},
+    "peerDependencies": {
+      "aframe": "^0.8.0"
+    },
+    "dependencies": {}
+  }

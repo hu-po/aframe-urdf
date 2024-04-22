@@ -13,6 +13,7 @@ import { STLLoader } from './STLLoader';
 AFRAME.registerComponent('urdf', {
   schema: {
     url: { type: 'asset' }
+    // how to create a list of joints before we know the number of joints?
   },
 
   init: function () {
@@ -22,6 +23,8 @@ AFRAME.registerComponent('urdf', {
     this.urdfLoader.parseVisual = true;
     this.urdfLoader.parseCollision = true;
     this.urdfLoader.loadMeshCb = function (path, manager, done) {
+      // Do we have access to the Object3D here?
+      // Should we create the entity here?
       console.log('Loading mesh from: ' + path);
       console.log('Manager: ' + manager.type);
       const loader = new STLLoader();
@@ -65,7 +68,7 @@ AFRAME.registerComponent('urdf', {
       console.log('Number of Links: ' + Object.keys(object.links).length);
       console.log('Number of Joints: ' + Object.keys(object.joints).length);
 
-      // Recursively go through children (object.children)
+      // Possible: Recursively go through children (object.children)
       //     pull out the object3d
       //     create new child entity with object3d
       //     parent to this entity

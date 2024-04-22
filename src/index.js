@@ -64,6 +64,14 @@ AFRAME.registerComponent('urdf', {
       // number of links in the URDF
       console.log('Number of Links: ' + Object.keys(object.links).length);
       console.log('Number of Joints: ' + Object.keys(object.joints).length);
+
+      // Recursively go through children (object.children)
+      //     pull out the object3d
+      //     create new child entity with object3d
+      //     parent to this entity
+      //     if the object3d has children, repeat
+      // 
+
       // iteratively add each link
       Object.keys(object.links).forEach(key => {
         console.log('Adding Object3D for link: ' + key);
@@ -81,6 +89,14 @@ AFRAME.registerComponent('urdf', {
         // console.log('Object visible: ' + newObject3D.visible);
         // console.log('Object children: ' + newObject3D.children.length);
         el.setObject3D(key, newObject3D);
+
+        // https://github.com/supermedium/superframe/blob/master/components/entity-generator/index.js
+        // // Create entities with supplied mixin.
+        // for (var i = 0; i < data.num; i++) {
+        //   var entity = document.createElement('a-entity');
+        //   entity.setAttribute('mixin', data.mixin);
+        //   this.el.appendChild(entity);
+        // }
       });
       el.emit('model-loaded', { format: 'urdf', model: object });
     });

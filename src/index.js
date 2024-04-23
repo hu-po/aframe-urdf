@@ -8,16 +8,17 @@
 // https://threejs.org/docs/#api/en/core/Object3D
 
 import URDFLoader from 'urdf-loader';
-import { STLLoader } from './STLLoader';
 
 AFRAME.registerComponent('urdf', {
   schema: {
-    url: { type: 'asset' }
+    url: {type: 'string'},
+    mtl: {type: 'model'},
     // how to create a list of joints before we know the number of joints?
   },
 
   init: function () {
     console.log('URDF Component Initialized');
+    this.joints = [];
     this.model = null;
     this.urdfLoader = new URDFLoader();
     this.urdfLoader.parseVisual = true;
@@ -27,7 +28,6 @@ AFRAME.registerComponent('urdf', {
       // Should we create the entity here?
       console.log('Loading mesh from: ' + path);
       console.log('Manager: ' + manager.type);
-      const loader = new STLLoader();
       loader.load(path, geom => {
         const mesh = new THREE.Mesh(geom, new THREE.MeshStandardMaterial());
         el.setObject3D('mesh', model);
@@ -51,6 +51,7 @@ AFRAME.registerComponent('urdf', {
   },
 
   resetMesh: function () {
+    // remove all children including root
     if (!this.model) { return; }
     this.el.removeObject3D('mesh');
   },
@@ -73,7 +74,14 @@ AFRAME.registerComponent('urdf', {
       //     create new child entity with object3d
       //     parent to this entity
       //     if the object3d has children, repeat
-      // 
+
+      // https://aframe.io/docs/1.5.0/introduction/javascript-events-dom-apis.html#adding-an-entity-with-appendchild
+
+      // Add a grabbable component to the entity?
+      // https://aframe.io/docs/1.5.0/introduction/javascript-events-dom-apis.html#adding-a-component-with-setattribute
+
+      // Add a obj-model component to the entity?
+      // https://aframe.io/docs/1.5.0/components/obj-model.html
 
       // iteratively add each link
       Object.keys(object.links).forEach(key => {

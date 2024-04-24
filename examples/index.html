@@ -12,13 +12,12 @@
 <body>
   <!-- <a-scene> -->
   <a-scene background="color: blue"
+    stats
     inspector="url: https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js">
     <a-assets>
       <a-asset-item id="default-mtl" src="./assets/default.mtl"></a-asset-item>
     </a-assets>
-    <!-- <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
-    <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere> -->
-    <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+    <a-plane position="0 0 0" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
     <a-sky color="#ECECEC"></a-sky>
     <a-entity id="robot" urdf="url: assets/urdf/stompy/robot.urdf; mtl: #default-mtl"></a-entity>
     <a-entity id="camera" camera position="0 1.5 0" look-controls wasd-controls></a-entity>

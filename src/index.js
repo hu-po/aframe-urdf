@@ -10,7 +10,8 @@ AFRAME.registerComponent('urdf', {
     var self = this;
     this.robot = null;
     this.objMap = new Map();
-    this.jointMap = new Map();
+    this.jointValueMap = new Map();
+    this.jointEntityMap = new Map();
     this.urdfLoader = new URDFLoader();
     this.urdfLoader.loadMeshCb = function (path, _, done) {
       console.log('Loading mesh from: ' + path);
@@ -19,10 +20,15 @@ AFRAME.registerComponent('urdf', {
       self.objMap.set(name, path);
       done();
     }
-    this.el.sceneEl.addEventListener('setjoints', (jointValues) => {
+    this.el.sceneEl.addEventListener('setjoints', (evt) => {
       if (!this.robot) { return; }
-      this.robot.setJointValues(jointValues.detail);
-      this.updateRobot(this.robot);
+      evt.detail.forEach((value, key) => {
+        this.robot.setJointValue(key, value);
+        var node = this.robot.joints[key];
+        var entity = this.jointEntityMap.get(key);
+        entity.object3D.position.copy(node.position);
+        entity.object3D.quaternion.copy(node.quaternion);
+      });
     });
   },
 
@@ -42,19 +48,22 @@ AFRAME.registerComponent('urdf', {
 
   remove: function () {
     if (!this.robot) { return; }
+    this.el.sceneEl.removeEventListener('setjoints', this.handleSetJoints);
   },
 
-  tick: function () {
+  tick: function (time, timeDelta) {
     if (!this.robot) { return; }
-    // // Moves random joint to random position for testing
-    const keys = Array.from(this.jointMap.keys());
-    const randomIndex = Math.floor(Math.random() * keys.length);
-    const randomJointName = keys[randomIndex];
-    const joint = this.robot.joints[randomJointName];
-    const randomPosition = joint.limit.lower + Math.random() * (joint.limit.upper - joint.limit.lower);
-    let jointValues = {};
-    jointValues[randomJointName] = randomPosition;
-    this.el.emit('setjoints', jointValues);
+    // Moves a random joint every 1 second for testing
+    if (time % 1000 < 20) {
+      const keys = Array.from(this.jointValueMap.keys());
+      const randomIndex = Math.floor(Math.random() * keys.length);
+      const randomJointName = keys[randomIndex];
+      const joint = this.robot.joints[randomJointName];
+      const randomPosition = joint.limit.lower + Math.random() * (joint.limit.upper - joint.limit.lower);
+      let jointValues = new Map();
+      jointValues.set(randomJointName, randomPosition);
+      this.el.emit('setjoints', jointValues);
+    }
   },
 
   buildRobot: function (node) {
@@ -80,24 +89,14 @@ AFRAME.registerComponent('urdf', {
       entity.object3D.quaternion.copy(node.quaternion);
       if (node.type === 'URDFJoint') {
         if (!(node.jointType === 'fixed')) {
-          this.jointMap.set(node.name, node.jointValue[0]);
+          this.jointValueMap.set(node.name, node.jointValue[0]);
+          this.jointEntityMap.set(node.name, entity);
         }
       }
     }
     // Continue to recurse through the children
     if (node.children && node.children.length > 0) {
       node.children.forEach(child => this.buildRobot(child));
-    }
-  },
-
-  updateRobot: function (node) {
-    if (node.type === 'URDFJoint') {
-      var entity = document.querySelector('#' + node.name.replace(/[^a-zA-Z0-9]/g, '_'));
-      entity.object3D.position.copy(node.position);
-      entity.object3D.quaternion.copy(node.quaternion);
-    }
-    if (node.children && node.children.length > 0) {
-      node.children.forEach(child => this.updateRobot(child));
     }
   }
 });

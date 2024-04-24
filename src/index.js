@@ -1,115 +1,93 @@
-// For more info on components see:
-// https://aframe.io/docs/1.5.0/introduction/writing-a-component.html
-// Inspired by README examples from:
-// https://www.npmjs.com/package/urdf-loader
-// Inspired by A-Frame OBJ Loader Component:
-// https://github.com/aframevr/aframe/blob/0b7aa6a0575c03963636b02ab24a9fc2658a747c/src/components/obj-model.js
-// Object3D definition
-// https://threejs.org/docs/#api/en/core/Object3D
-
 import URDFLoader from 'urdf-loader';
+// import { URDFRobot, URDFJoint, URDFLink, URDFCollider, URDFVisual, URDFMimicJoint } from 'urdf-loader';
 
 AFRAME.registerComponent('urdf', {
   schema: {
-    url: {type: 'string'},
-    mtl: {type: 'model'},
-    // how to create a list of joints before we know the number of joints?
+    url: { type: 'string' },
+    mtl: { type: 'model' },
   },
 
   init: function () {
     console.log('URDF Component Initialized');
-    this.joints = [];
-    this.model = null;
+    var data = this.data;
+    var el = this.el;
+    this.robot = null;
     this.urdfLoader = new URDFLoader();
     this.urdfLoader.parseVisual = true;
     this.urdfLoader.parseCollision = true;
     this.urdfLoader.loadMeshCb = function (path, manager, done) {
-      // Do we have access to the Object3D here?
-      // Should we create the entity here?
       console.log('Loading mesh from: ' + path);
-      console.log('Manager: ' + manager.type);
-      loader.load(path, geom => {
-        const mesh = new THREE.Mesh(geom, new THREE.MeshStandardMaterial());
-        el.setObject3D('mesh', model);
-        el.emit('model-loaded', { format: 'stl', model: model });
-        done(mesh);
-      });
+      var name = "mesh_link_" + path.split('/').pop().split('.')[0];
+      name = name.replace(/[^a-zA-Z0-9]/g, '_');
+      var entity = document.createElement('a-entity');
+      entity.setAttribute('id', name);
+      entity.setAttribute('obj-model', { obj: path, mtl: data.mtl });
+      el.appendChild(entity);
+      done(entity.object3D);
     }
 
   },
 
   update: function (oldData) {
     var data = this.data;
-    if (!data.url) { return; }
-    this.resetMesh();
-    this.loadURDF(data.url);
+    if (!data.url) {
+      console.error('URDF URL is required');
+      return;
+    }
+    this.resetRobot();
+    this.loadRobot();
     // this.model.setJointValue( jointName, jointAngle );
   },
 
   remove: function () {
-    this.resetMesh();
+    this.resetRobot();
   },
 
-  resetMesh: function () {
+  resetRobot: function () {
     // remove all children including root
-    if (!this.model) { return; }
+    if (!this.robot) { return; }
     this.el.removeObject3D('mesh');
   },
 
-  loadURDF: function (urdfUrl) {
-    console.log('Loading URDF from: ' + urdfUrl);
-    var self = this;
-    var el = this.el;
-    var urdfLoader = this.urdfLoader;
-
-    urdfLoader.load(urdfUrl, function (object) {
-      self.model = object;
-      // el.sceneEl.add(newObject3D);
-      // number of links in the URDF
-      console.log('Number of Links: ' + Object.keys(object.links).length);
-      console.log('Number of Joints: ' + Object.keys(object.joints).length);
-
-      // Possible: Recursively go through children (object.children)
-      //     pull out the object3d
-      //     create new child entity with object3d
-      //     parent to this entity
-      //     if the object3d has children, repeat
-
-      // https://aframe.io/docs/1.5.0/introduction/javascript-events-dom-apis.html#adding-an-entity-with-appendchild
-
-      // Add a grabbable component to the entity?
-      // https://aframe.io/docs/1.5.0/introduction/javascript-events-dom-apis.html#adding-a-component-with-setattribute
-
-      // Add a obj-model component to the entity?
-      // https://aframe.io/docs/1.5.0/components/obj-model.html
-
-      // iteratively add each link
-      Object.keys(object.links).forEach(key => {
-        console.log('Adding Object3D for link: ' + key);
-        // const originalObject3D = object.links[key];
-        // console.log('Object position: ' + originalObject3D.position.x + ', ' + originalObject3D.position.y + ', ' + originalObject3D.position.z);
-        // console.log('Object rotation: ' + originalObject3D.rotation.x + ', ' + originalObject3D.rotation.y + ', ' + originalObject3D.rotation.z);
-        // console.log('Object scale: ' + originalObject3D.scale.x + ', ' + originalObject3D.scale.y + ', ' + originalObject3D.scale.z);
-        // console.log('Object visible: ' + originalObject3D.visible);
-        // console.log('Object children: ' + originalObject3D.children.length);
-
-        const newObject3D = new THREE.Object3D().copy(object.links[key]);
-        // console.log('Object position: ' + newObject3D.position.x + ', ' + newObject3D.position.y + ', ' + newObject3D.position.z);
-        // console.log('Object rotation: ' + newObject3D.rotation.x + ', ' + newObject3D.rotation.y + ', ' + newObject3D.rotation.z);
-        // console.log('Object scale: ' + newObject3D.scale.x + ', ' + newObject3D.scale.y + ', ' + newObject3D.scale.z);
-        // console.log('Object visible: ' + newObject3D.visible);
-        // console.log('Object children: ' + newObject3D.children.length);
-        el.setObject3D(key, newObject3D);
-
-        // https://github.com/supermedium/superframe/blob/master/components/entity-generator/index.js
-        // // Create entities with supplied mixin.
-        // for (var i = 0; i < data.num; i++) {
-        //   var entity = document.createElement('a-entity');
-        //   entity.setAttribute('mixin', data.mixin);
-        //   this.el.appendChild(entity);
-        // }
-      });
-      el.emit('model-loaded', { format: 'urdf', model: object });
+  loadRobot: function () {
+    const url = this.data.url;
+    console.log('Loading URDF from: ' + url);
+    this.urdfLoader.load(url, (robot) => {
+      console.log('Number of Links: ' + Object.keys(robot.links).length);
+      console.log('Number of Joints: ' + Object.keys(robot.joints).length);
+      this.traverseRobot(robot);
     });
+  },
+
+  traverseRobot: function (node) {
+    console.log('Visiting node: ' + node.name);
+    console.log('Node type: ' + node.type);
+    if (node.type === 'URDFJoint' || node.type === 'URDFLink') {
+      // Create new entity for the link/joint
+      var entity = document.createElement('a-entity');
+      entity.setAttribute('id', node.name.replace(/[^a-zA-Z0-9]/g, '_'));
+      if (node.parent) {
+        var parentName = node.parent.name.replace(/[^a-zA-Z0-9]/g, '_');
+        var parentEntity = document.querySelector('#' + parentName);
+        parentEntity.appendChild(entity);
+      }
+      else {
+        this.el.appendChild(entity);
+      }
+      // TODO: This is broken!!
+      entity.setAttribute('position', node.position);
+      entity.setAttribute('rotation', node.rotation);
+    } else if (node.type === 'URDFVisual') {
+      // Find the mesh entity and attach it to the parent
+      var parentName = node.parent.name.replace(/[^a-zA-Z0-9]/g, '_');
+      var parentEntity = document.querySelector('#' + parentName);
+      var meshEntity = document.querySelector('#mesh_' + parentName);
+      meshEntity.parentNode.removeChild(meshEntity);
+      console.log('Re-parenting: ' + meshEntity.name);
+      parentEntity.appendChild(meshEntity); // Set the parent of the entity
+    }
+    if (node.children && node.children.length > 0) {
+      node.children.forEach(child => this.traverseRobot(child));
+    }
   }
 });

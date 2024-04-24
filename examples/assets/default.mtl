@@ -1,3 +1,4 @@
 newmtl mat0
-  Ka 0.73 0.41 0.78
-  Kd 0.73 0.41 0.78
+  Ka 0.0 0.0 0.0  # Black ambient color
+  Kd 0.0 0.0 0.0  # Black diffuse color
+  d 0.5           # 50% transparency

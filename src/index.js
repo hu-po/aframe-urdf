@@ -22,6 +22,7 @@ AFRAME.registerComponent('urdf', {
     this.el.sceneEl.addEventListener('setjoints', (jointValues) => {
       if (!this.robot) { return; }
       this.robot.setJointValues(jointValues.detail);
+      this.updateRobot(this.robot);
     });
   },
 
@@ -35,7 +36,7 @@ AFRAME.registerComponent('urdf', {
       this.robot = _robot;
       console.log('Number of Links: ' + Object.keys(this.robot.links).length);
       console.log('Number of Joints: ' + Object.keys(this.robot.joints).length);
-      this.traverseRobot(this.robot);
+      this.buildRobot(this.robot);
     });
   },
 
@@ -56,7 +57,7 @@ AFRAME.registerComponent('urdf', {
     this.el.emit('setjoints', jointValues);
   },
 
-  traverseRobot: function (node) {
+  buildRobot: function (node) {
     console.log('Visiting node: ' + node.name);
     console.log('Node type: ' + node.type);
     if (node.parent) {
@@ -85,7 +86,18 @@ AFRAME.registerComponent('urdf', {
     }
     // Continue to recurse through the children
     if (node.children && node.children.length > 0) {
-      node.children.forEach(child => this.traverseRobot(child));
+      node.children.forEach(child => this.buildRobot(child));
+    }
+  },
+
+  updateRobot: function (node) {
+    if (node.type === 'URDFJoint') {
+      var entity = document.querySelector('#' + node.name.replace(/[^a-zA-Z0-9]/g, '_'));
+      entity.object3D.position.copy(node.position);
+      entity.object3D.quaternion.copy(node.quaternion);
+    }
+    if (node.children && node.children.length > 0) {
+      node.children.forEach(child => this.updateRobot(child));
     }
   }
 });

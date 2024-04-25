@@ -2,7 +2,7 @@
 *.class
 
 # Ignore URDF files
-urdf/
+examples/assets/urdf
 
 # Node Modules
 node_modules/

@@ -69,28 +69,56 @@ AFRAME.registerComponent('urdf', {
   buildRobot: function (node) {
     console.log('Visiting node: ' + node.name);
     console.log('Node type: ' + node.type);
-    if (node.parent) {
-      var parentName = node.parent.name.replace(/[^a-zA-Z0-9]/g, '_');
-      var parentEntity = document.querySelector('#' + parentName);
-    }
-    if (node.type === 'URDFVisual') {
-      var path = this.objMap.get(parentName)
-      parentEntity.setAttribute('obj-model', { obj: path, mtl: this.data.mtl });
-    } else {
+    // Primitive meshes like boxes, cylinders, and spheres
+    if (node.type === 'Mesh') {
+      // For Meshes you need the parent (URDFLink) of the parent (URDFVisual)
+      parentName = node.parent.parent.name.replace(/[^a-zA-Z0-9]/g, '_');
+      parentEntity = document.querySelector('#' + parentName);
       var entity = document.createElement('a-entity');
       entity.setAttribute('id', node.name.replace(/[^a-zA-Z0-9]/g, '_'));
-      if (node.parent) {
-        parentEntity.appendChild(entity);
+      var scale = node.scale;
+      var params = node.geometry.parameters;
+      entity.setAttribute('scale', { x: scale.x, y: scale.y, z: scale.z });
+      if (node.geometry.type === 'BoxGeometry') {
+        entity.setAttribute('geometry', { primitive: 'box', width: params.width, height: params.height, depth: params.depth });
+      }
+      else if (node.geometry.type === 'CylinderGeometry') {
+        // URDF cylinders are oriented along the y-axis and centered, hence the rotation and position
+        entity.setAttribute('rotation', { x: 90, y: 0, z: 0 })
+        entity.setAttribute('position', { x: 0, y: 0, z: 0.5 * scale.y });
+        entity.setAttribute('geometry', { primitive: 'cylinder', radius: params.radiusTop, height: params.height });
+      }
+      else if (node.geometry.type === 'SphereGeometry') {
+        entity.setAttribute('geometry', { primitive: 'sphere', radius: params.radius });
       }
       else {
-        this.el.appendChild(entity);
+        console.error('Unsupported geometry type: ' + node.geometry.type);
       }
-      entity.object3D.position.copy(node.position);
-      entity.object3D.quaternion.copy(node.quaternion);
-      if (node.type === 'URDFJoint') {
-        if (!(node.jointType === 'fixed')) {
-          this.jointValueMap.set(node.name, node.jointValue[0]);
-          this.jointEntityMap.set(node.name, entity);
+      parentEntity.appendChild(entity);
+    } else {
+      if (node.parent) {
+        var parentName = node.parent.name.replace(/[^a-zA-Z0-9]/g, '_');
+        var parentEntity = document.querySelector('#' + parentName);
+      }
+      if (node.type === 'URDFVisual') {
+        var path = this.objMap.get(parentName)
+        parentEntity.setAttribute('obj-model', { obj: path, mtl: this.data.mtl });
+      } else {
+        var entity = document.createElement('a-entity');
+        entity.setAttribute('id', node.name.replace(/[^a-zA-Z0-9]/g, '_'));
+        if (node.parent) {
+          parentEntity.appendChild(entity);
+        }
+        else {
+          this.el.appendChild(entity);
+        }
+        entity.object3D.position.copy(node.position);
+        entity.object3D.quaternion.copy(node.quaternion);
+        if (node.type === 'URDFJoint') {
+          if (!(node.jointType === 'fixed')) {
+            this.jointValueMap.set(node.name, node.jointValue[0]);
+            this.jointEntityMap.set(node.name, entity);
+          }
         }
       }
     }

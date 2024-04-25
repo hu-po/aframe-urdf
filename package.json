@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "description": "A URDF loader for A-Frame",
   "main": "dist/aframe-urdf.min.js",
-  "type": "module",
   "files": [
     "dist/*",
     "src/*"

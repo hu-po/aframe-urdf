@@ -54,7 +54,7 @@ AFRAME.registerComponent('urdf', {
   tick: function (time, timeDelta) {
     if (!this.robot) { return; }
     // Moves a random joint every 1 second for testing
-    if (time % 1000 < 20) {
+    if (time % 1000 < 100) {
       const keys = Array.from(this.jointValueMap.keys());
       const randomIndex = Math.floor(Math.random() * keys.length);
       const randomJointName = keys[randomIndex];

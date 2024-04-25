@@ -63,13 +63,13 @@ open `https://localhost:8080` in your VR browser, click "Enter VR" in the bottom
 
 This currently only supports URDFs that use `.obj` files or primitives like boxes, spheres, and cylinders. The example provided is based on a [3DoF arm](https://spart.readthedocs.io/en/latest/_images/SC_3DoF.png), and has also been debugged with the [Stompy Humanoid](https://kscale.dev/).
 
-## Publishing
-
-[Publish to npm](https://aframe.io/docs/1.5.0/introduction/writing-a-component.html#publishing-a-component)
-https://www.npmjs.com/package/angle
+## Citation
 
 ```
-npm install -g angle
-npm run dev
-npm publish
+@misc{aframe-urdf-2024,
+  title={A-Frame URDF},
+  author={Hugo Ponte},
+  year={2024},
+  url={https://github.com/hu-po/aframe-urdf}
+}
 ```

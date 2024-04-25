@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "description": "A URDF loader for A-Frame",
   "main": "dist/aframe-urdf.min.js",
+  "type": "module",
   "files": [
     "dist/*",
-    "src/*",
-    "urdf/*"
+    "src/*"
   ],
   "scripts": {
     "dev": "cross-env INSPECTOR_VERSION=dev webpack serve --port 8080",
@@ -25,9 +25,14 @@
     "urdf",
     "urdf-models"
   ],
-  "repository": "github.com/hu-po/aframe-urdf",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hu-po/aframe-urdf.git"
+  },
   "license": "MIT",
+  "homepage": "https://github.com/hu-po/aframe-urdf#readme",
   "devDependencies": {
+    "angle": "^0.9.1",
     "cross-env": "^7.0.3",
     "prettier": "^2.7.1",
     "webpack": "^5.91.0",

@@ -1,6 +1,6 @@
 {
   "name": "aframe-urdf",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A URDF loader for A-Frame",
   "main": "dist/aframe-urdf.min.js",
   "files": [

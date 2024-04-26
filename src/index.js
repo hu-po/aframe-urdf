@@ -1,11 +1,9 @@
 import URDFLoader from 'urdf-loader';
+import rgbHex from 'rgb-hex';
 import { randomNormal } from 'd3-random';
 
 AFRAME.registerComponent('urdf', {
-  schema: {
-    url: { type: 'string' },
-    mtl: { type: 'model' },
-  },
+  schema: {url: { type: 'string' }},
 
   init: function () {
     var self = this;
@@ -59,7 +57,7 @@ AFRAME.registerComponent('urdf', {
   tick: function (time, timeDelta) {
     if (!this.robot) { return; }
     if (this.jitter && time % this.jitter_ms < timeDelta) {
-      this.jitter();
+      this.jitterFunc();
     }
   },
 
@@ -99,7 +97,16 @@ AFRAME.registerComponent('urdf', {
       }
       if (node.type === 'URDFVisual') {
         var path = this.objMap.get(parentName)
-        parentEntity.setAttribute('obj-model', { obj: path, mtl: this.data.mtl });
+        parentEntity.setAttribute('obj-model', { obj: path});
+        try {
+          var rgba = node.urdfNode.children[2].children[0].attributes["rgba"].nodeValue;
+          rgba = rgba.split(' ').map(parseFloat);
+          parentEntity.setAttribute('material', {color: '#' + rgbHex(rgba[0], rgba[1], rgba[2]), opacity: rgba[3]});
+      } catch (error) {
+          console.warn('Could not find rgba attribute for ' + node.name + ' setting to default color');
+          parentEntity.setAttribute('material', {color: '#ffffff'});
+      }
+      
       } else {
         var entity = document.createElement('a-entity');
         entity.setAttribute('id', node.name.replace(/[^a-zA-Z0-9]/g, '_'));
@@ -125,7 +132,7 @@ AFRAME.registerComponent('urdf', {
     }
   },
 
-  jitter: function () {
+  jitterFunc: function () {
     this.jointValueMap.forEach((currentPosition, jointName) => {
       const joint = this.robot.joints[jointName];
       const random = randomNormal(0, (joint.limit.upper - joint.limit.lower) * this.jitter_stddev);

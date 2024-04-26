@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "d3-random": "^3.0.1",
+    "rgb-hex": "^4.1.0",
     "urdf-loader": "^0.12.1"
   }
 }

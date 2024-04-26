@@ -1,28 +1,129 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+  <head>
+    <title>A-Frame URDF Examples</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      html {
+        font-size: 14px;
+      }
+      body {
+        background: rgb(239,45,94);
+        color: #fff;
+        font: normal 500 1.2rem/1.2 Inconsolata, Andale Mono, Courier New, monospace;
+        padding: 1rem 2rem;
+      }
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .header {
+        position: relative;
+      }
+      .resources {
+        font-size: 0;  /* Collapse whitespace. */
+        text-transform: uppercase;
+      }
+      .resources li + li {
+        margin-top: 0.5rem;
+      }
+      .resources a {
+        color: rgba(0,0,0,.5);
+        display: inline-block;
+        font-size: 1.2rem;
+        margin: -0.25rem -0.5rem;
+        padding: 0.25rem 0.5rem;
+        text-decoration: none;
+        transition: all 0.075s ease-in-out;
+      }
+      .resources a:hover {
+        background-color: rgba(0,0,0,0.25);
+        color: #fff;
+      }
+      h1,
+      h2 {
+        line-height: 100%;
+      }
+      h1 {
+        font-size: 1.6rem;
+        font-weight: 100;
+        letter-spacing: 0.04rem;
+        margin-bottom: 1.25rem;
+        text-transform: uppercase;
+      }
+      h2 {
+        color: rgba(0,0,0,0.5);
+        font-size: 0.9rem;
+        font-weight: 300;
+        margin: 2rem 0 0.5rem;
+        padding: 0;
+        text-transform: uppercase;
+      }
+      hr {
+        background: none;
+        border: 0;
+        border-bottom: 1px dashed rgba(255,255,255,0.25);
+        margin: 2rem 0;
+      }
+      .links li + li {
+        box-shadow: inset 0 0.15rem 0.1rem -0.15rem rgba(0,0,0,0.5);
+      }
+      .links a {
+        color: #fff;
+        display: block;
+        font-size: 1.5rem;
+        letter-spacing: 0.01em;
+        padding: 0.75rem 0;
+        text-decoration: none;
+        transition: opacity 0.075s ease-in-out;
+      }
+      .links a em {
+        font-size: .9rem;
+        font-style: normal;
+        opacity: .6;
+      }
+      .links a:hover {
+        background-color: rgba(0,0,0,0.15);
+        box-shadow: inset 0 0 0 0.15rem rgba(0,0,0,0.15);
+      }
+      .links a:active {
+        background-color: rgba(0,0,0,0.25);
+        opacity: 0.75;
+      }
+      .links li:hover,
+      .links li:hover + li {
+        margin: 0 -0.75rem;
+      }
+      .links li:hover a,
+      .links li:hover + li a {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+      @media only screen and (min-width: 1000px) {
+        h1 {
+          font-size: 3rem;
+        }
+        .resources {
+          font-size: 1.2;
+        }
+        .resources li {
+          display: inline-block;
+        }
+        .resources li + li {
+          margin-left: 2.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
 
-<head>
-  <meta charset="utf-8">
-  <title> URDF A-Frame Example </title>
-  <meta name="description" content="URDF • A-Frame">
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  <script src="../dist/aframe-urdf.min.js"></script>
-</head>
+    <h2>Examples</h2>
 
-<body>
-  <a-scene background="color: blue"
-    stats
-    inspector="url: https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js">
-    <a-assets>
-      <a-asset-item id="default-mtl" src="./assets/default.mtl"></a-asset-item>
-    </a-assets>
-    <a-plane position="0 0 0" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
-    <a-sky color="#ECECEC"></a-sky>
-    <a-entity id="robot" position="0 1 0" rotation="-90 0 0" urdf="url: assets/3dof.urdf; mtl: #default-mtl"></a-entity>
-    <a-entity id="camera" camera position="0 1.5 0" look-controls wasd-controls></a-entity>
-    <a-entity id="rightHand" hand-tracking-grab-controls="hand: right"></a-entity>
-    <a-entity id="leftHand" hand-tracking-grab-controls="hand: left"></a-entity>
-  </a-scene>
-</body>
-
+    <ul class="links">
+      <li><a href="3dof.html">3DoF</a></li>
+      <li><a href="stompy.html">Stompy Humanoid</a></li>
+    </ul>
+  </body>
 </html>

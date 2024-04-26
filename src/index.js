@@ -1,4 +1,5 @@
 import URDFLoader from 'urdf-loader';
+import { randomNormal } from 'd3-random';
 
 AFRAME.registerComponent('urdf', {
   schema: {
@@ -9,6 +10,10 @@ AFRAME.registerComponent('urdf', {
   init: function () {
     var self = this;
     this.robot = null;
+    this.jitter = true;
+    this.jitter_ms = 1000;
+    this.jitter_stddev = 0.1;
+    this.matMap = new Map();
     this.objMap = new Map();
     this.jointValueMap = new Map();
     this.jointEntityMap = new Map();
@@ -53,16 +58,8 @@ AFRAME.registerComponent('urdf', {
 
   tick: function (time, timeDelta) {
     if (!this.robot) { return; }
-    // Moves a random joint every 1 second for testing
-    if (time % 1000 < 100) {
-      const keys = Array.from(this.jointValueMap.keys());
-      const randomIndex = Math.floor(Math.random() * keys.length);
-      const randomJointName = keys[randomIndex];
-      const joint = this.robot.joints[randomJointName];
-      const randomPosition = joint.limit.lower + Math.random() * (joint.limit.upper - joint.limit.lower);
-      let jointValues = new Map();
-      jointValues.set(randomJointName, randomPosition);
-      this.el.emit('setjoints', jointValues);
+    if (this.jitter && time % this.jitter_ms < timeDelta) {
+      this.jitter();
     }
   },
 
@@ -126,5 +123,16 @@ AFRAME.registerComponent('urdf', {
     if (node.children && node.children.length > 0) {
       node.children.forEach(child => this.buildRobot(child));
     }
+  },
+
+  jitter: function () {
+    this.jointValueMap.forEach((currentPosition, jointName) => {
+      const joint = this.robot.joints[jointName];
+      const random = randomNormal(0, (joint.limit.upper - joint.limit.lower) * this.jitter_stddev);
+      let newPosition = currentPosition + random();
+      newPosition = Math.max(joint.limit.lower, Math.min(joint.limit.upper, newPosition));
+      this.jointValueMap.set(jointName, newPosition);
+    });
+    this.el.emit('setjoints', this.jointValueMap);
   }
 });

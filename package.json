@@ -42,6 +42,7 @@
     "aframe": "^1.5.0"
   },
   "dependencies": {
+    "d3-random": "^3.0.1",
     "urdf-loader": "^0.12.1"
   }
 }

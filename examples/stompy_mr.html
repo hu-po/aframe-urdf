@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title> URDF A-Frame Example </title>
+  <meta name="description" content="URDF • A-Frame">
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="../dist/aframe-urdf.min.js"></script>
+</head>
+
+<body>
+  <a-scene
+  obb-collider="showColliders: false"
+  renderer="colorManagement: true;"
+  button
+  xr-mode-ui="XRMode: ar"
+  info-message="htmlSrc: #messageText">
+    <a-entity id="robot" position="0 1 0" rotation="-90 0 0" urdf="url: assets/urdf/stompy_simple/robot.urdf"></a-entity>
+    <a-entity id="camera" camera position="0 1.5 0" look-controls wasd-controls></a-entity>
+    <a-entity id="rightHand" hand-tracking-grab-controls="hand: right"></a-entity>
+    <a-entity id="leftHand" hand-tracking-grab-controls="hand: left"></a-entity>
+  </a-scene>
+</body>
+
+</html>

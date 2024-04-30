@@ -57,6 +57,7 @@ AFRAME.registerComponent('urdf', {
   tick: function (time, timeDelta) {
     if (!this.robot) { return; }
     if (this.jitter && time % this.jitter_ms < timeDelta) {
+      this.defaultPoseFunc();
       this.jitterFunc();
     }
   },
@@ -132,12 +133,23 @@ AFRAME.registerComponent('urdf', {
     }
   },
 
+  // Jitters the joints randomly within their limits
   jitterFunc: function () {
     this.jointValueMap.forEach((currentPosition, jointName) => {
       const joint = this.robot.joints[jointName];
       const random = randomNormal(0, (joint.limit.upper - joint.limit.lower) * this.jitter_stddev);
       let newPosition = currentPosition + random();
       newPosition = Math.max(joint.limit.lower, Math.min(joint.limit.upper, newPosition));
+      this.jointValueMap.set(jointName, newPosition);
+    });
+    this.el.emit('setjoints', this.jointValueMap);
+  },
+
+  // Set the joints to halfway between their limits
+  defaultPoseFunc: function () {
+    this.jointValueMap.forEach((_, jointName) => {
+      const joint = this.robot.joints[jointName];
+      const newPosition = (joint.limit.upper + joint.limit.lower) / 2;
       this.jointValueMap.set(jointName, newPosition);
     });
     this.el.emit('setjoints', this.jointValueMap);
